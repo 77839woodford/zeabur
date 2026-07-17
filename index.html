@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Secure Remote Access</h1>
+    <div id="controls">
+        <input id="code-input" placeholder="Enter Code">
+        <button onclick="joinSession()">Connect</button>
+    </div>
+
+    <!-- The "Scammer Proof" Approval Modal -->
+    <div id="approval-modal" style="display:none; position:fixed; top:20%; background:red; color:white; padding:20px;">
+        <p>A remote user wants to connect. Do you approve?</p>
+        <button onclick="approveConnection()">YES, ALLOW ACCESS</button>
+        <button onclick="rejectConnection()">NO, REJECT</button>
+    </div>
+
+    <script src="https://cdn.socket.io/4.x/socket.io.min.js"></script>
+    <script>
+        const socket = io(); // Connect to your server
+        let pc = new RTCPeerConnection({
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] // Replace with Metered TURN
+        });
+
+        // 1. SCAMMER PROTECTION: Stop automatic connections
+        socket.on('connection-request', (data) => {
+            document.getElementById('approval-modal').style.display = 'block';
+        });
+
+        function approveConnection() {
+            // ONLY now do we create the WebRTC handshake
+            // ... (Add your WebRTC handshake logic here)
+            alert("Connection Approved");
+        }
+    </script>
+</body>
+</html>
